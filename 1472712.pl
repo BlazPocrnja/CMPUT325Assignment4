@@ -37,14 +37,14 @@ disarm(Adivisions, Bdivisions, Solution) :-
 
 	list_sum(AMonth, Sum1),
 	list_sum(BMonth, Sum2),
-	list_sum(AMonth2, Sum3),
 	Sum1 #= Sum2,
-	Sum1 #=< Sum3,
+	(list_sum(AMonth2, Sum3) -> 
+		Sum1 #=< Sum3
+	),
 
 	subtract_once(Adivisions, AMonth, NextA),
 	subtract_once(Bdivisions, BMonth, NextB),
-	disarm(NextA, NextB, Rest),
-	append([ThisMonth], Rest, Solution).
+	disarm(NextA, NextB, Rest).
 
 
 
