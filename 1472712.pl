@@ -28,18 +28,25 @@ disarm(Adivisions, Bdivisions, Solution) :-
 	Lengths ins 1..2,
 	ALen #\= BLen,
 	NALen #\= NBLen,
+
 	length(ThisA, ALen), 
 	length(ThisB, BLen),
 	length(NextA, NALen), 
 	length(NextB, NBLen),
 
-	list_sum(ThisA, Sum1),
-	list_sum(ThisB, Sum2),
-	list_sum(NextA, Sum3),
-	list_sum(NextB, Sum4),
-	Sum1 #= Sum2,
-	Sum3 #= Sum4,
-	Sum1 #=< Sum3,
+	ThisA ins inf..sup,
+	ThisB ins inf..sup,
+	NextA ins inf..sup,
+	NextB ins inf..sup,
+
+	Sums = [Sum1,Sum2],
+	Sums ins inf..sup,
+	Sum1 #=< Sum2,
+
+	sum(ThisA, #=, Sum1),
+	sum(ThisB, #=, Sum1),
+	sum(NextA, #=, Sum2),
+	sum(NextB, #=, Sum2),
 
 	subset(ThisA, Adivisions),
 	subset(ThisB, Bdivisions),
@@ -55,40 +62,6 @@ disarm(Adivisions, Bdivisions, Solution) :-
 
 	disarm(RestAdiv, RestBdiv, Rest).
 
-
-
-
-
-	
-	/*
-	Solution = [ThisMonth | Rest],
-	ThisMonth = [AMonth, BMonth],
-	Rest = [[AMonth2, _] | _],
-
-	[ALen, BLen] ins 1..2,
-	ALen #\= BLen,
-	length(AMonth, ALen), 
-	length(BMonth, BLen),
-
-	subset(AMonth, Adivisions),
-	subset(BMonth, Bdivisions),
-
-	list_sum(AMonth, Sum1),
-	list_sum(BMonth, Sum2),
-	Sum1 #= Sum2,
-	list_sum(AMonth2, Sum3), 
-	Sum1 #=< Sum3,
-	
-
-	subtract_once(Adivisions, AMonth, NextA),
-	subtract_once(Bdivisions, BMonth, NextB),
-	subset(AMonth2, NextA),
-	disarm(NextA, NextB, Rest).
-	*/
-
-list_sum([Item], Item).
-list_sum([Item1,Item2 | Tail], Total) :-
-    list_sum([Item1+Item2|Tail], Total).
 
 subtract_once(List, [], List).
 subtract_once(List, [Item|Delete], Result):-
