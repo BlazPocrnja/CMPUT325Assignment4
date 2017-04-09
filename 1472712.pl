@@ -18,6 +18,7 @@ fourSquares(N, [S1, S2, S3, S4]) :-
 
 /*	Question 2
 */
+/*
 disarm([],[],[]).
 disarm(Adivisions, Bdivisions, Solution) :- 
 	Solution = [ThisMonth, NextMonth | Rest],
@@ -54,13 +55,49 @@ disarm(Adivisions, Bdivisions, Solution) :-
 	subtract_once(Adivisions, ThisA, NextAdiv),
 	subtract_once(Bdivisions, ThisB, NextBdiv),
 
-	subset(NextA, NextAdiv),
-	subset(NextB, NextBdiv),
+	disarm(NextAdiv, NextBdiv, [NextMonth | Rest]).
+*/
 
-	subtract_once(NextAdiv, NextA, RestAdiv),
-	subtract_once(NextBdiv, NextB, RestBdiv),
+disarm([],[],[]).
+disarm(Adivisions, Bdivisions, Solution) :- 
+	ThisMonth = [ThisA, ThisB],
+	NextMonth = [NextA, NextB],
 
-	disarm(RestAdiv, RestBdiv, Rest).
+	Lengths = [ALen, BLen, NALen, NBLen],
+	Lengths ins 1..2,
+	ALen #\= BLen,
+	NALen #\= NBLen,
+
+	length(ThisA, ALen), 
+	length(ThisB, BLen),
+	length(NextA, NALen), 
+	length(NextB, NBLen),
+
+	ThisA ins inf..sup,
+	ThisB ins inf..sup,
+	NextA ins inf..sup,
+	NextB ins inf..sup,
+
+	Sums = [Sum1,Sum2],
+	Sums ins inf..sup,
+	Sum1 #=< Sum2,
+
+	sum(ThisA, #=, Sum1),
+	sum(ThisB, #=, Sum1),
+	sum(NextA, #=, Sum2),
+	sum(NextB, #=, Sum2),
+
+	subset(ThisA, Adivisions),
+	subset(ThisB, Bdivisions),
+
+	subtract_once(Adivisions, ThisA, NextAdiv),
+	subtract_once(Bdivisions, ThisB, NextBdiv),
+
+	disarm(NextAdiv, NextBdiv, [NextMonth | Rest]),
+	append([ThisMonth], [NextMonth|Rest], Solution).
+
+
+
 
 
 subtract_once(List, [], List).
