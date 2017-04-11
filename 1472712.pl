@@ -18,84 +18,20 @@ fourSquares(N, [S1, S2, S3, S4]) :-
 
 /*	Question 2
 */
-/*
 disarm([],[],[]).
-disarm(Adivisions, Bdivisions, Solution) :- 
-	Solution = [ThisMonth, NextMonth | Rest],
-	ThisMonth = [ThisA, ThisB],
-	NextMonth = [NextA, NextB],
+disarm(Adivisions, Bdivisions, Solution) :-
+	Vars = [X1,X2,X3],
+	Vars ins inf..sup,
+	X1+X2 #= X3,
 
-	Lengths = [ALen, BLen, NALen, NBLen],
-	Lengths ins 1..2,
-	ALen #\= BLen,
-	NALen #\= NBLen,
+	((select(X1, Adivisions, Ad), select(X2, Ad, NextAdiv), select(X3, Bdivisions, NextBdiv)) ;
+	(select(X1, Bdivisions, Bd), select(X2, Bd, NextBdiv), select(X3, Adivisions, NextAdiv))),
 
-	length(ThisA, ALen), 
-	length(ThisB, BLen),
-	length(NextA, NALen), 
-	length(NextB, NBLen),
-
-	ThisA ins inf..sup,
-	ThisB ins inf..sup,
-	NextA ins inf..sup,
-	NextB ins inf..sup,
-
-	Sums = [Sum1,Sum2],
-	Sums ins inf..sup,
-	Sum1 #=< Sum2,
-
-	sum(ThisA, #=, Sum1),
-	sum(ThisB, #=, Sum1),
-	sum(NextA, #=, Sum2),
-	sum(NextB, #=, Sum2),
-
-	subset(ThisA, Adivisions),
-	subset(ThisB, Bdivisions),
-
-	subtract_once(Adivisions, ThisA, NextAdiv),
-	subtract_once(Bdivisions, ThisB, NextBdiv),
-
-	disarm(NextAdiv, NextBdiv, [NextMonth | Rest]).
-*/
-
-disarm([],[],[]).
-disarm(Adivisions, Bdivisions, Solution) :- 
-	ThisMonth = [ThisA, ThisB],
-	NextMonth = [NextA, NextB],
-
-	Lengths = [ALen, BLen, NALen, NBLen],
-	Lengths ins 1..2,
-	ALen #\= BLen,
-	NALen #\= NBLen,
-
-	length(ThisA, ALen), 
-	length(ThisB, BLen),
-	length(NextA, NALen), 
-	length(NextB, NBLen),
-
-	ThisA ins inf..sup,
-	ThisB ins inf..sup,
-	NextA ins inf..sup,
-	NextB ins inf..sup,
-
-	Sums = [Sum1,Sum2],
-	Sums ins inf..sup,
-	Sum1 #=< Sum2,
-
-	sum(ThisA, #=, Sum1),
-	sum(ThisB, #=, Sum1),
-	sum(NextA, #=, Sum2),
-	sum(NextB, #=, Sum2),
-
-	subset(ThisA, Adivisions),
-	subset(ThisB, Bdivisions),
-
-	subtract_once(Adivisions, ThisA, NextAdiv),
-	subtract_once(Bdivisions, ThisB, NextBdiv),
-
-	disarm(NextAdiv, NextBdiv, [NextMonth | Rest]),
-	append([ThisMonth], [NextMonth|Rest], Solution).
-
+	subtract_once(Adivisions, NextAdiv, ThisA),
+	subtract_once(Bdivisions, NextBdiv, ThisB),
+	
+	disarm(NextAdiv, NextBdiv, RestSolution),
+	append([[ThisA,ThisB]], RestSolution, Solution).
 
 
 
