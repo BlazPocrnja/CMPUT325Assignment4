@@ -20,9 +20,10 @@ fourSquares(N, [S1, S2, S3, S4]) :-
 */
 disarm([],[],[]).
 disarm(Adivisions, Bdivisions, Solution) :-
-	Vars = [X1,X2,X3],
+	Vars = [X1,X2,X3,X4],
 	Vars ins inf..sup,
 	X1+X2 #= X3,
+	X3 #=< X4,
 
 	((select(X1, Adivisions, Ad), select(X2, Ad, NextAdiv), select(X3, Bdivisions, NextBdiv)) ;
 	(select(X1, Bdivisions, Bd), select(X2, Bd, NextBdiv), select(X3, Adivisions, NextAdiv))),
@@ -31,6 +32,7 @@ disarm(Adivisions, Bdivisions, Solution) :-
 	subtract_once(Bdivisions, NextBdiv, ThisB),
 	
 	disarm(NextAdiv, NextBdiv, RestSolution),
+	((RestSolution = [[NextA,_] |_] , sum(NextA, #=, X4)) ; (RestSolution = [])),
 	append([[ThisA,ThisB]], RestSolution, Solution).
 
 
