@@ -61,7 +61,6 @@ disarm(Adivisions, Bdivisions, [[[X1,X2],[X3]] |RestSolution], LastSum) :-
 
 	Vars = [X1,X2,X3],
 	Vars ins VarMin..VarMax,
-
 	X1 #=< X2,
 	X1+X2 #= X3,
 	LastSum #=< X3,
