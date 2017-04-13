@@ -49,14 +49,12 @@ disarm([],[],[],_).
 /*
 	disarm/4 
 
-	Added an extra parameter LastSum, which keeps track of the total power of the previous
+	Includes an extra parameter LastSum, which keeps track of the total power of the previous
 	dismantlement.
 
 	Returns true if A dismantles 2 divisions, and B dismantles 1 with the given constraints.
 */
 disarm(Adivisions, Bdivisions, [[[X1,X2],[X3]] |RestSolution], LastSum) :-
-	%The lower and upper bounds for the variables domain must be the min and max values 
-	% of the given divisions lists, respectively.
 	append(Adivisions,Bdivisions, Divisions),
 	min_list(Divisions, VarMin),
 	max_list(Divisions, VarMax),
@@ -64,19 +62,13 @@ disarm(Adivisions, Bdivisions, [[[X1,X2],[X3]] |RestSolution], LastSum) :-
 	Vars = [X1,X2,X3],
 	Vars ins VarMin..VarMax,
 
-	%The sum of a country's dismantlement of two divisions must be equal to the other's single dismantlement.
 	X1 #=< X2,
 	X1+X2 #= X3,
-
-	%The total power dismantlement of last month has to be less than or equal to the current dismantlement.
 	LastSum #=< X3,
 
-	%Remove selected divisions out of both Adivisions and Bdivisions.
-	select(X1, Adivisions, Ad),
-  	select(X2, Ad, NextAdiv),
+	select(X1, Adivisions, Ad), select(X2, Ad, NextAdiv),
   	select(X3, Bdivisions, NextBdiv),
 
-  	%Disarm the rest, using X3 as the sum to compare to the next dismantlement.
 	disarm(NextAdiv, NextBdiv, RestSolution, X3). 
 
 /*	
@@ -94,8 +86,7 @@ disarm(Adivisions, Bdivisions, [[[X3],[X1,X2]] |RestSolution], LastSum) :-
 	X1+X2 #= X3,
 	LastSum #=< X3,
 
-	select(X1, Bdivisions, Bd),
-  	select(X2, Bd, NextBdiv),
+	select(X1, Bdivisions, Bd), select(X2, Bd, NextBdiv),
   	select(X3, Adivisions, NextAdiv),
 
 	disarm(NextAdiv, NextBdiv, RestSolution, X3). 
